@@ -3,8 +3,11 @@
 import { useState, useCallback } from "react";
 import fetchNames from "../lib/fetchNames.js";
 import debounce from "lodash.debounce";
+import { useNavigate} from 'react-router-dom'
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
   const [searchData, setSearchData] = useState({
     origin: "",
     destination: "",
@@ -50,8 +53,28 @@ export default function HomePage() {
     debouncedFetchDestination(value);
   };
 
-  const handleSearch = () => {
-    console.log("Search data:", searchData);
+ const handleSearch = (e) => {
+    if (e && typeof e.preventDefault === "function") e.preventDefault();
+
+    console.log("handleSearch called:", searchData);
+
+    if (!searchData.origin || !searchData.destination || !searchData.endDate || !searchData.startDate) {
+      alert("please fill all the fields");
+      return;
+    }
+
+    try {
+      const searchParams = new URLSearchParams({
+        from: searchData.origin,
+        to: searchData.destination,
+        startDate: searchData.startDate,
+        endDate: searchData.endDate,
+      });
+
+      navigate(`/search-flights?${searchParams.toString()}`);
+    } catch (err) {
+      console.error("navigate error:", err);
+    }
   };
 
   return (
@@ -135,7 +158,7 @@ export default function HomePage() {
                         <li
                           key={s.iata_code}
                           onClick={() => {
-                            handleInputChange("origin", `${s.airport_name}`);
+                            handleInputChange("origin", `${s.iata_code}`);
                             setOriginSuggestions([]);
                           }}
                           className="px-4 py-2 hover:bg-sky-100 cursor-pointer font-serif"
@@ -170,7 +193,7 @@ export default function HomePage() {
                           onClick={() => {
                             handleInputChange(
                               "destination",
-                              `${s.airport_name}`
+                              `${s.iata_code}`
                             );
                             setToSuggestions([]);
                           }}
@@ -224,6 +247,7 @@ export default function HomePage() {
                     Search
                   </label>
                   <button
+                    type="button"
                     onClick={handleSearch}
                     className="w-full bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-lg font-medium transition-colors focus:ring-2 focus:ring-sky-500 focus:ring-offset-2  hover:cursor-pointer outline-none"
                   >
