@@ -7,6 +7,7 @@ import { GetAndStoreFlightsIndigo, IndigoSpecific } from '../Controllers/Indigo/
 import { GetAndStoreSpicejet, SpicejetSpecific } from '../Controllers/Spicejet/getFlightsSpicejet.js';
 import { CombinedGetStore } from '../Controllers/combinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
+import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
 
 
 const router = express.Router();
@@ -30,6 +31,9 @@ router.post("/flights/akasa/StoreGet", validateFlightRequest, GetAndStoreAkasa);
 router.post("/flight/AllStore", CombinedGetStore);
 
 // this one searches for name of airport
-router.get("/api/airport/name",getNames)
+router.get("/api/airport/name", getNames)
+
+// main routes for searching flights
+router.get("/api/SearchFlights",SearchGetFlights)
 
 export default router;
