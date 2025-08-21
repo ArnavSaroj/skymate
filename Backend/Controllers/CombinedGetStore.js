@@ -25,7 +25,7 @@ export const CombinedGetStore = async (req, res) => {
                   statusCode: code,
                   data: data,
                 });
-                return mockRes; // Return for chaining
+                return mockRes; 
               },
             }),
           };

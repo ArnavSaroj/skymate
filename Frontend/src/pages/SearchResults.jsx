@@ -10,8 +10,8 @@ export default function SearchResults() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // accept multiple possible param names
-  const payload = {
+  // accept multiple possible param names for UI display
+  const displayPayload = {
     from:
       searchParams.get("from") ||
       searchParams.get("origin") ||
@@ -34,10 +34,29 @@ export default function SearchResults() {
       "",
   };
 
-  useEffect(() => {
-    console.log("SearchResults mounted, payload:", payload);
+  const qs = searchParams.toString();
 
-    if (!payload.from || !payload.to || !payload.departure || !payload.returnDate) {
+  useEffect(() => {
+    // use a fresh URLSearchParams parsed from the query-string so the effect
+    // doesn't directly depend on the complex `searchParams` object.
+    const sp = new URLSearchParams(qs);
+    const payloadInside = {
+      from: sp.get("from") || sp.get("origin") || sp.get("o") || "",
+      to: sp.get("to") || sp.get("destination") || sp.get("d") || "",
+      departure:
+        sp.get("departure") || sp.get("startDate") || sp.get("start") || "",
+      returnDate:
+        sp.get("return") || sp.get("endDate") || sp.get("returnDate") || "",
+    };
+
+    console.log("SearchResults mounted, payload:", payloadInside);
+
+    if (
+      !payloadInside.from ||
+      !payloadInside.to ||
+      !payloadInside.departure ||
+      !payloadInside.returnDate
+    ) {
       setError("Missing search parameters. Check query string keys.");
       return;
     }
@@ -47,8 +66,8 @@ export default function SearchResults() {
       setLoading(true);
       setError(null);
       try {
-        console.log("Calling SearchApi with:", payload);
-        const data = await SearchApi(payload); // SearchApi should build the GET URL
+        console.log("Calling SearchApi with:", payloadInside);
+        const data = await SearchApi(payloadInside);
         console.log("SearchApi response:", data);
         if (!mounted) return;
         setFlights(data.flights || []);
@@ -65,26 +84,36 @@ export default function SearchResults() {
     return () => {
       mounted = false;
     };
-    // re-run when query string changes
-  }, [searchParams.toString()]);
+  }, [qs]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold">Search Results</h2>
-          <p className="text-sm text-gray-600">
-            {payload.from} → {payload.to} • {payload.departure} — {payload.returnDate}
-          </p>
+    // opaque container sits above the fixed airplane image
+    <div className="relative z-50 bg-white min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold ">Search Results</h2>
+            <p className="text-sm text-gray-600">
+              {displayPayload.from} → {displayPayload.to} •{" "}
+              {displayPayload.departure} — {displayPayload.returnDate}
+            </p>
+          </div>
+          <div>
+            <button
+              onClick={() => navigate(-1)}
+              className="px-3 py-1 bg-gray-200 rounded"
+            >
+              Back
+            </button>
+          </div>
         </div>
-        <div>
-          <button onClick={() => navigate(-1)} className="px-3 py-1 bg-gray-200 rounded">Back</button>
-        </div>
-      </div>
 
-      {loading && <div className="py-8 text-center">Searching for flights...</div>}
-      {error && <div className="py-4 text-red-600">Error: {error}</div>}
-      {!loading && !error && <FlightResultsTable flights={flights} />}
+        {loading && (
+          <div className="py-8 text-center">Searching for flights...</div>
+        )}
+        {error && <div className="py-4 text-red-600">Error: {error}</div>}
+        {!loading && !error && <FlightResultsTable flights={flights} />}
+      </div>
     </div>
   );
 }
