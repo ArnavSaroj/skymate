@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import fetchNames from "../lib/fetchNames.js";
 import debounce from "lodash.debounce";
-import { useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -53,12 +53,16 @@ export default function HomePage() {
     debouncedFetchDestination(value);
   };
 
- const handleSearch = (e) => {
+  const handleSearch = (e) => {
     if (e && typeof e.preventDefault === "function") e.preventDefault();
 
-    console.log("handleSearch called:", searchData);
 
-    if (!searchData.origin || !searchData.destination || !searchData.endDate || !searchData.startDate) {
+    if (
+      !searchData.origin ||
+      !searchData.destination ||
+      !searchData.endDate ||
+      !searchData.startDate
+    ) {
       alert("please fill all the fields");
       return;
     }
@@ -97,13 +101,13 @@ export default function HomePage() {
                   Home
                 </a>
                 <a
-                  href="#"
+                  href="/pricing"
                   className="text-gray-600 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors"
                 >
                   Pricing
                 </a>
                 <a
-                  href="#"
+                  href="/working"
                   className="text-gray-600 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors"
                 >
                   How It Works
@@ -111,9 +115,12 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex items-center">
-              <button className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer">
+              <a
+                href="/signup"
+                className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer"
+              >
                 Sign In
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -191,10 +198,7 @@ export default function HomePage() {
                         <li
                           key={s.iata_code}
                           onClick={() => {
-                            handleInputChange(
-                              "destination",
-                              `${s.iata_code}`
-                            );
+                            handleInputChange("destination", `${s.iata_code}`);
                             setToSuggestions([]);
                           }}
                           className="px-4 py-2 hover:bg-sky-100 cursor-pointer font-serif"
