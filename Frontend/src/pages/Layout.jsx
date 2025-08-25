@@ -8,6 +8,7 @@ import SearchResults from "./SearchResults";
 
 const Layout = () => {
   const location = useLocation();
+
   return (
     <div className="w-full min-h-screen bg-white">
       <img
@@ -17,7 +18,6 @@ const Layout = () => {
       />
       <HomePage />
       {location.pathname === "/search-flights" && <SearchResults />}
-
       <DealsPage />
       <SkymateWhat />
       <Working />
