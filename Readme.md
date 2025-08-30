@@ -80,68 +80,7 @@ SkyMate is a comprehensive flight search and booking platform designed to simpli
 ]
 ```
 
-### Indigo Flights
 
-  - **Method**: GET
-  - **Endpoint**: `/api/flights/indigo`
-  - **Description**: Retrieves flights from Indigo airlines.
-  - **Response**:
-
-<!-- end list -->
-
-```json
-[
-    {
-        "flightNumber": "6E2002",
-        "departureTime": "20:55",
-        "arrivalTime": "23:00",
-        "price": 4000,
-        "airline": "Indigo"
-    }
-]
-```
-
-### Spicejet Flights
-
-  - **Method**: GET
-  - **Endpoint**: `/api/flights/spicejet`
-  - **Description**: Retrieves flights from Spicejet airlines.
-  - **Response**:
-
-<!-- end list -->
-
-```json
-[
-    {
-        "flightNumber": "SG 474",
-        "departureTime": "22:10",
-        "arrivalTime": "00:20",
-        "price": 4200,
-        "airline": "Spicejet"
-    }
-]
-```
-
-### Akasa Flights
-
-  - **Method**: GET
-  - **Endpoint**: `/api/flights/akasa`
-  - **Description**: Retrieves flights from Akasa airlines.
-  - **Response**:
-
-<!-- end list -->
-
-```json
-[
-    {
-        "flightNumber": "QP 1103",
-        "departureTime": "17:45",
-        "arrivalTime": "20:00",
-        "price": 3800,
-        "airline": "Akasa"
-    }
-]
-```
 
 -----
 
@@ -323,4 +262,4 @@ SkyMate/
 
 ## License
 
-*To be added*
+MIT
