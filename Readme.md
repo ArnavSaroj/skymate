@@ -1,4 +1,4 @@
-# ✈️SkyMate: Flight Search and Booking Platform
+# ✈️SkyMate: Flight Search and Price Comparison platform
 
 SkyMate is a comprehensive flight search and booking platform designed to simplify the process of finding and booking the best flight deals. It aggregates flight data from multiple airlines, including Akasa, Indigo, and Spicejet, providing users with a unified search experience. SkyMate aims to solve the problem of scattered flight information, making it easier for users to compare prices and book flights from a single platform.
 
