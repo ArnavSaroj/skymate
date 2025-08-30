@@ -8,7 +8,9 @@ import { GetAndStoreSpicejet, SpicejetSpecific } from '../Controllers/Spicejet/g
 import { CombinedGetStore } from '../Controllers/combinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
 import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
-
+import { create_User } from '../Controllers/userReadWrite.js';
+import validate from '../Controllers/lib/validator.js';
+import {body} from 'express-validator'
 
 const router = express.Router();
 
@@ -34,6 +36,9 @@ router.post("/flight/AllStore", CombinedGetStore);
 router.get("/api/airport/name", getNames)
 
 // main routes for searching flights
-router.get("/api/SearchFlights",SearchGetFlights)
+router.get("/api/SearchFlights", SearchGetFlights)
+
+// routes for signup
+router.post("/api/signup",validate([body('username').notEmpty(),body('email').isEmail().notEmpty(),body('password').isLength({min:8}).notEmpty()]),create_User)
 
 export default router;
