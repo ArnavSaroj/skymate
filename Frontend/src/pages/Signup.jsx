@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { IoMdEyeOff } from "react-icons/io";
 import { IoEye, IoArrowBackCircle } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
+import { supabase } from "../lib/supabaseBrowser";
+
 
 const SignUpPage = () => {
   const navigate = useNavigate();
@@ -38,6 +40,20 @@ const SignUpPage = () => {
 
     navigate("/", { replace: true });
   };
+
+  const handleGoogleLogin = async() => {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+  provider:'google',
+  options: {
+    redirectTo: 'http://example.com/auth/callback',
+  },
+  })
+    
+    if (error) {
+      console.error("google login error",error.message)
+    }
+}
+
 
   return (
     <div className="w-screen h-screen overflow-hidden relative">
@@ -147,7 +163,7 @@ const SignUpPage = () => {
 
             <button
               type="button"
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md border border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center justify-center gap-2 hover:cursor-pointer"
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-md border border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 flex items-center justify-center gap-2 hover:cursor-pointer" onClick={handleGoogleLogin}
             >
               <FcGoogle size={20} />
               Continue with Google

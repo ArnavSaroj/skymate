@@ -1,6 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import { CiBookmark } from "react-icons/ci";
+import { FaBookmark } from "react-icons/fa";
 
 export default function FlightResultsTable({ flights = [] }) {
+
+  const [BookmarkedIds, setBookmarkIds] = useState([]);
+
+  const handleBookmark = (id) => {
+    setBookmarkIds((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      } else {
+        return [...prev, id];
+      }
+    });
+  };
+
   if (!flights || flights.length === 0) {
     return (
       <div className="text-center py-8">
@@ -93,6 +108,24 @@ export default function FlightResultsTable({ flights = [] }) {
                     "-"
                   )}
                 </td>
+                <div className="flex items-center justify-between px-3">
+                  <button className="mt-2 mb-2 px-5 py-2 bg-pink-400 text-black text-sm font-medium rounded-lg shadow hover:bg-pink-500 focus:outline-nonehover:cursor-pointer  transition">
+                    View
+                  </button>
+                  {BookmarkedIds.includes(f.id) ? (
+                    <FaBookmark
+                      size={25}
+                      onClick={()=>handleBookmark(f.id)}
+                      className="hover cursor-pointer"
+                    />
+                  ) : (
+                    <CiBookmark
+                      size={25}
+                      onClick={()=>handleBookmark(f.id)}
+                      className="hover cursor-pointer"
+                    />
+                  )}
+                </div>
               </tr>
             ))}
           </tbody>
