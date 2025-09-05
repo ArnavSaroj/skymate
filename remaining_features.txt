@@ -1,7 +1,0 @@
-4 main features remaining
-1.bookmark functionality
-2.view functionality whihc should take to the actual flight search page
-3.charts functionality whihc would showcase how much prices is up or down
-4.top deals of week table
-
-apart from this some more things are remaining like making the table more clean and all that and also implementing signup routes
