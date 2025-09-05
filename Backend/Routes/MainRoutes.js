@@ -9,8 +9,8 @@ import { CombinedGetStore } from '../Controllers/combinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
 import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
 import { create_User } from '../Controllers/userReadWrite.js';
-import validate from '../Controllers/lib/validator.js';
-import {body} from 'express-validator'
+// import validate from '../Controllers/lib/validator.js';
+// import {body} from 'express-validator'
 
 const router = express.Router();
 
@@ -39,6 +39,6 @@ router.get("/api/airport/name", getNames)
 router.get("/api/SearchFlights", SearchGetFlights)
 
 // routes for signup
-router.post("/api/signup",validate([body('username').notEmpty(),body('email').isEmail().notEmpty(),body('password').isLength({min:8}).notEmpty()]),create_User)
+// router.post("/api/signup",validate([body('username').notEmpty(),body('email').isEmail().notEmpty(),body('password').isLength({min:8}).notEmpty()]),create_User)
 
 export default router;
