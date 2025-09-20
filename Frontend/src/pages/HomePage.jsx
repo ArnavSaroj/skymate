@@ -1,11 +1,19 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect,useContext,createContext } from "react";
 import fetchNames from "../lib/fetchNames.js";
 import debounce from "lodash.debounce";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../lib/supabaseBrowser";
+import { AuthContext } from "../context/AuthContext.jsx";
+
+
 
 export default function HomePage() {
+
+
+const {User,setUser}=useContext(AuthContext)??{}
+
   const navigate = useNavigate();
 
   const [searchData, setSearchData] = useState({
@@ -15,8 +23,39 @@ export default function HomePage() {
     endDate: "",
   });
 
+
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
+
+  // useeffect for checking active session
+  useEffect(() => {
+    const getSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error getting session:", error.message);
+      } else {
+        setUser(data.session?.user ?? null);
+      }
+    };
+    getSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error(error.message);
+    }
+  };
 
   const handleInputChange = (field, value) => {
     setSearchData((prev) => ({
@@ -56,7 +95,6 @@ export default function HomePage() {
   const handleSearch = (e) => {
     if (e && typeof e.preventDefault === "function") e.preventDefault();
 
-
     if (
       !searchData.origin ||
       !searchData.destination ||
@@ -82,6 +120,7 @@ export default function HomePage() {
   };
 
   return (
+    
     <div className=" min-h-[600px] relative overflow-visible sm:min-h-0 md:min-height-0 font-serif">
       {/* Background Plane Image */}
 
@@ -115,12 +154,37 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex items-center">
-              <a
-                href="/signup"
-                className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer"
-              >
-                Sign In
-              </a>
+              {!User ? (
+                <Link
+                  to="/signup"
+                  className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer"
+                >
+                  Sign In
+                </Link>
+              ) : (
+                <a>
+                  <div className="flex items-center justify-between gap-x-8 ">
+                    <div className="flex items-center font-medium  rounded-lg px-2 py-1">
+                      <img
+                          src={User.user_metadata.avatar_url}
+                         
+                        alt="Profile"
+                        className="w-7 h-7 rounded-full"
+                      />
+                      <span className="font-medium px-2 py-1">
+                        {User.user_metadata.full_name}
+                      </span>
+                    </div>
+
+                    <button
+                      onClick={handleLogout}
+                      className="bg-black text-white rounded-lg font-medium px-4 py-2 shadow-md hover:cursor-pointer"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -263,6 +327,7 @@ export default function HomePage() {
           </div>
         </div>
       </main>
-    </div>
+      </div>
+      
   );
 }

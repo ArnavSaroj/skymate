@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import HomePage from "./HomePage";
 import DealsPage from "./DealsPage";
 import SkymateWhat from "./skymateWhat";
 import Working from "./Working";
 import { useLocation } from "react-router-dom";
 import SearchResults from "./SearchResults";
+import { AuthContext } from "../context/AuthContext";
 
 const Layout = () => {
   const location = useLocation();
-
+const {User,setUser}=useContext(AuthContext)
   return (
     <div className="w-full min-h-screen bg-white">
       <img
@@ -21,7 +22,7 @@ const Layout = () => {
       <DealsPage />
       <SkymateWhat />
       <Working />
-    </div>
+      </div>
   );
 };
 

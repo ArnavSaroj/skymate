@@ -9,6 +9,7 @@ import { CombinedGetStore } from '../Controllers/combinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
 import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
 import { create_User } from '../Controllers/userReadWrite.js';
+import { CreateBookmark } from '../Controllers/bookmark/bookmark.js';
 // import validate from '../Controllers/lib/validator.js';
 // import {body} from 'express-validator'
 
@@ -40,5 +41,9 @@ router.get("/api/SearchFlights", SearchGetFlights)
 
 // routes for signup
 // router.post("/api/signup",validate([body('username').notEmpty(),body('email').isEmail().notEmpty(),body('password').isLength({min:8}).notEmpty()]),create_User)
+
+// routes for bookmark creation
+router.post("/api/create_bookmark",CreateBookmark)
+
 
 export default router;

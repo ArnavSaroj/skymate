@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import React, { useContext, useState,createContext } from "react";
 import { CiBookmark } from "react-icons/ci";
 import { FaBookmark } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import {AuthContext} from '../../context/AuthContext.jsx'
+
+
 
 export default function FlightResultsTable({ flights = [] }) {
+
+  const { User,setUser } = useContext(AuthContext) ?? {};
 
   const [BookmarkedIds, setBookmarkIds] = useState([]);
 
   const handleBookmark = (id) => {
+    console.log(User);
+
+    if (!User) {
+      return toast("you need to be logged in to access this functionality!!!");
+    }
+
     setBookmarkIds((prev) => {
       if (prev.includes(id)) {
         return prev.filter((item) => item !== id);
@@ -28,6 +40,7 @@ export default function FlightResultsTable({ flights = [] }) {
 
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <ToastContainer position="top-center" autoClose={2000} theme="dark" type='warning' />
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
@@ -115,13 +128,13 @@ export default function FlightResultsTable({ flights = [] }) {
                   {BookmarkedIds.includes(f.id) ? (
                     <FaBookmark
                       size={25}
-                      onClick={()=>handleBookmark(f.id)}
+                      onClick={() => handleBookmark(f.id)}
                       className="hover cursor-pointer"
                     />
                   ) : (
                     <CiBookmark
                       size={25}
-                      onClick={()=>handleBookmark(f.id)}
+                      onClick={() => handleBookmark(f.id)}
                       className="hover cursor-pointer"
                     />
                   )}
