@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import FlightResultsTable from "../components/search-result/searchResultTable.jsx";
 import { SearchApi } from "../routes/searchApi.js";
+import PricesTrends from '../components/charts/pricesTrends.jsx'
 
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
@@ -49,7 +50,6 @@ export default function SearchResults() {
         sp.get("return") || sp.get("endDate") || sp.get("returnDate") || "",
     };
 
-    console.log("SearchResults mounted, payload:", payloadInside);
 
     if (
       !payloadInside.from ||
@@ -66,11 +66,11 @@ export default function SearchResults() {
       setLoading(true);
       setError(null);
       try {
-        console.log("Calling SearchApi with:", payloadInside);
         const data = await SearchApi(payloadInside);
-        console.log("SearchApi response:", data);
         if (!mounted) return;
-        setFlights(data.flights || []);
+        // setFlights(data.flights || []);
+        const sortedFlight = (data.flights).sort((a,b)=>a.price-b.price);
+        setFlights(sortedFlight);
       } catch (err) {
         console.error("SearchApi error:", err);
         if (!mounted) return;
@@ -92,6 +92,9 @@ export default function SearchResults() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
         <div className="mb-4 flex items-center justify-between">
           <div>
+            <div>
+             <PricesTrends/>
+            </div>
             <h2 className="text-xl font-semibold ">Search Results</h2>
             <p className="text-sm text-gray-600">
               {displayPayload.from} → {displayPayload.to} •{" "}

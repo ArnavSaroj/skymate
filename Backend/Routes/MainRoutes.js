@@ -9,7 +9,8 @@ import { CombinedGetStore } from '../Controllers/combinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
 import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
 import { create_User } from '../Controllers/userReadWrite.js';
-import { CreateBookmark } from '../Controllers/bookmark/bookmark.js';
+import { CreateBookmark, DeleteBookmark, PriceDropBookmark } from '../Controllers/bookmark/bookmark.js';
+import getHistory from '../Controllers/trends/getHistory.js';
 // import validate from '../Controllers/lib/validator.js';
 // import {body} from 'express-validator'
 
@@ -43,7 +44,14 @@ router.get("/api/SearchFlights", SearchGetFlights)
 // router.post("/api/signup",validate([body('username').notEmpty(),body('email').isEmail().notEmpty(),body('password').isLength({min:8}).notEmpty()]),create_User)
 
 // routes for bookmark creation
-router.post("/api/create_bookmark",CreateBookmark)
+router.post("/api/create_bookmark", CreateBookmark)
+router.post("/api/delete_bookmark", DeleteBookmark)
 
+// routes for checking bookmark email
+router.post("/api/checkBookmark",PriceDropBookmark)
+
+
+// routes for graphs feature
+router.get("/api/historicPrice", getHistory);
 
 export default router;

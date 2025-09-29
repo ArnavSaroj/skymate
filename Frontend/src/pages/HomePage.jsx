@@ -1,18 +1,23 @@
 "use client";
 
-import { useState, useCallback, useEffect,useContext,createContext } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useContext,
+  createContext,
+} from "react";
 import fetchNames from "../lib/fetchNames.js";
 import debounce from "lodash.debounce";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../lib/supabaseBrowser";
 import { AuthContext } from "../context/AuthContext.jsx";
-
-
+import { CgProfile } from "react-icons/cg";
 
 export default function HomePage() {
-
-
-const {User,setUser}=useContext(AuthContext)??{}
+  const auth = useContext(AuthContext) ?? {};
+  const User = auth?.User;
+  const setUser = auth?.setUser;
 
   const navigate = useNavigate();
 
@@ -22,7 +27,6 @@ const {User,setUser}=useContext(AuthContext)??{}
     startDate: "",
     endDate: "",
   });
-
 
   const [originSuggestions, setOriginSuggestions] = useState([]);
   const [toSuggestions, setToSuggestions] = useState([]);
@@ -35,6 +39,7 @@ const {User,setUser}=useContext(AuthContext)??{}
         console.error("Error getting session:", error.message);
       } else {
         setUser(data.session?.user ?? null);
+        console.log(data.session.user.user_metadata);
       }
     };
     getSession();
@@ -54,6 +59,8 @@ const {User,setUser}=useContext(AuthContext)??{}
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error(error.message);
+    } else {
+      setUser(null);
     }
   };
 
@@ -120,7 +127,6 @@ const {User,setUser}=useContext(AuthContext)??{}
   };
 
   return (
-    
     <div className=" min-h-[600px] relative overflow-visible sm:min-h-0 md:min-height-0 font-serif">
       {/* Background Plane Image */}
 
@@ -165,12 +171,11 @@ const {User,setUser}=useContext(AuthContext)??{}
                 <a>
                   <div className="flex items-center justify-between gap-x-8 ">
                     <div className="flex items-center font-medium  rounded-lg px-2 py-1">
-                      <img
-                          src={User.user_metadata.avatar_url}
-                         
-                        alt="Profile"
-                        className="w-7 h-7 rounded-full"
-                      />
+                      {User.user_metadata.avatar_url ? (
+                        <img src={User.user_metadata.picture} className="rounded-full w-8" />
+                      ) : (
+                        <CgProfile />
+                      )}
                       <span className="font-medium px-2 py-1">
                         {User.user_metadata.full_name}
                       </span>
@@ -327,7 +332,6 @@ const {User,setUser}=useContext(AuthContext)??{}
           </div>
         </div>
       </main>
-      </div>
-      
+    </div>
   );
 }
