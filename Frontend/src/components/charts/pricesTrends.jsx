@@ -6,32 +6,52 @@ import {
   CategoryScale,
   LinearScale,
   PointElement,
+  plugins,
+  Legend,
+  Title,
 } from "chart.js";
 
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
 
-const PricesTrends = () => {
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement,Title,Legend);
+
+
+
+
+const PricesTrends = ({ labels = [], prices = [] }) => {
+  
+
   const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+    labels: labels,
     datasets: [
       {
         label: "Sales",
-        data: [10, 20, 15, 30, 25],
-        borderColor: "rgba(89, 187, 155, 1)",
+        data: prices,
+        borderColor: "rgba(0,0,0)",
         borderWidth: 2,
         fill: true,
+        tension: 0,
+        
       },
     ],
   };
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-  };
+ const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { 
+      display: false,
+      position: "top"
+    },
+    title: {
+      display:true,
+      text: "Prices Trends",
+    }
+  }
+};
 
   return (
     <div>
-      hello world
-      <div className="h-64 w-full">
+      <div className="h-[400px] w-[600px]">
         <Line data={data} options={options} />
       </div>
     </div>

@@ -2,13 +2,13 @@ import {supabase} from '../../Config/supabaseClient.js'
 
 const  getHistory = async (req, res) => {
     try {
-         const { from, destination, StartDate } = req.body;
-// TODO startdate will be added later
-    if (!from || !destination || !from) {
+         const { from, to, departure } = req.body;
+// TODO departure will be added later
+    if (!from || !to || !from) {
         return res.status(500).json({ message: "missing parameters" });
     }
     
-        const { data: routeId, error:IdError } = await supabase.from("routes").select("id").eq("origin_iata_code", from).eq("destination_iata_code", destination).single();
+        const { data: routeId, error:IdError } = await supabase.from("routes").select("id").eq("origin_iata_code", from).eq("destination_iata_code", to).single();
 
         if (IdError) {
             return res.status(500).json({message:error});

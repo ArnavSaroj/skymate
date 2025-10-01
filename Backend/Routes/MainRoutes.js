@@ -52,6 +52,6 @@ router.post("/api/checkBookmark",PriceDropBookmark)
 
 
 // routes for graphs feature
-router.get("/api/historicPrice", getHistory);
+router.post("/api/historicPrice", getHistory);
 
 export default router;

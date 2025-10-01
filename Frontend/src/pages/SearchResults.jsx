@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import FlightResultsTable from "../components/search-result/searchResultTable.jsx";
 import { SearchApi } from "../routes/searchApi.js";
-import PricesTrends from '../components/charts/pricesTrends.jsx'
+import PricesTrends from "../components/charts/pricesTrends.jsx";
+import historyPrices from "../routes/historyPrices.js";
 
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
@@ -10,6 +11,30 @@ export default function SearchResults() {
   const [flights, setFlights] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [historicPrices, setHistoricPrices] = useState([]);
+
+
+
+const now = new Date();
+const monthsToShow = 6;
+
+let filteredData = historicPrices.filter(item => {
+  const date = new Date(item.departure_date);
+  return date >= new Date(now.setMonth(now.getMonth() - monthsToShow));
+});
+
+// if still too many dates cut sample it 
+  const maxPoints = 60;
+if (filteredData.length > maxPoints) {
+  const step = Math.ceil(filteredData.length / maxPoints);
+  filteredData = filteredData.filter((_, idx) => idx % step === 0);
+}
+
+const trendLabels = filteredData.map(item => item.departure_date);
+const trendPrices = filteredData.map(item => item.price);
+
+
+
 
   // accept multiple possible param names for UI display
   const displayPayload = {
@@ -50,7 +75,6 @@ export default function SearchResults() {
         sp.get("return") || sp.get("endDate") || sp.get("returnDate") || "",
     };
 
-
     if (
       !payloadInside.from ||
       !payloadInside.to ||
@@ -67,10 +91,14 @@ export default function SearchResults() {
       setError(null);
       try {
         const data = await SearchApi(payloadInside);
+        const prevPrices = await historyPrices(payloadInside);
+        console.log(payloadInside);
         if (!mounted) return;
         // setFlights(data.flights || []);
-        const sortedFlight = (data.flights).sort((a,b)=>a.price-b.price);
+        const sortedFlight = data.flights.sort((a, b) => a.price - b.price);
         setFlights(sortedFlight);
+        setHistoricPrices(prevPrices.data);
+       
       } catch (err) {
         console.error("SearchApi error:", err);
         if (!mounted) return;
@@ -93,7 +121,8 @@ export default function SearchResults() {
         <div className="mb-4 flex items-center justify-between">
           <div>
             <div>
-             <PricesTrends/>
+              <PricesTrends labels={trendLabels} prices={trendPrices}/>
+              {/* <PricesTrends /> */}
             </div>
             <h2 className="text-xl font-semibold ">Search Results</h2>
             <p className="text-sm text-gray-600">
