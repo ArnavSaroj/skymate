@@ -1,5 +1,7 @@
 # ✈️SkyMate: Flight Search and Price Comparison platform
 
+I was finding it difficult to get cheapest flight prices across different airlines ,hence i built a webscraper which scrapes data from different airlines websites(currently 3) and returns the cheapest price among all the airlines.This tool works for all major Indian routes and airlines.You can also bookmark your flights so that you will be notified once price drops below certain threshold.I am also working on the historic prices graphs so that users would be able to get more perspectives on fluctuation of flight prices!!
+
 SkyMate is a comprehensive flight search and booking platform designed to simplify the process of finding and booking the best flight deals. It aggregates flight data from multiple airlines, including Akasa, Indigo, and Spicejet, providing users with a unified search experience. SkyMate aims to solve the problem of scattered flight information, making it easier for users to compare prices and book flights from a single platform.
 
 -----
