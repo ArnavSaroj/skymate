@@ -5,6 +5,7 @@ import { SearchApi } from "../routes/searchApi.js";
 import PricesTrends from "../components/charts/pricesTrends.jsx";
 import historyPrices from "../routes/historyPrices.js";
 
+
 export default function SearchResults() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -14,10 +15,10 @@ export default function SearchResults() {
   const [historicPrices, setHistoricPrices] = useState([]);
 
 
-
 const now = new Date();
 const monthsToShow = 6;
 
+  // these all are for charts
 let filteredData = historicPrices.filter(item => {
   const date = new Date(item.departure_date);
   return date >= new Date(now.setMonth(now.getMonth() - monthsToShow));
@@ -32,8 +33,6 @@ if (filteredData.length > maxPoints) {
 
 const trendLabels = filteredData.map(item => item.departure_date);
 const trendPrices = filteredData.map(item => item.price);
-
-
 
 
   // accept multiple possible param names for UI display
@@ -139,10 +138,10 @@ const trendPrices = filteredData.map(item => item.price);
             </button>
           </div>
         </div>
-
         {loading && (
           <div className="py-8 text-center">Searching for flights...</div>
         )}
+
         {error && <div className="py-4 text-red-600">Error: {error}</div>}
         {!loading && !error && <FlightResultsTable flights={flights} />}
       </div>

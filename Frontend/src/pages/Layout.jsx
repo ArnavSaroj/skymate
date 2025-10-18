@@ -6,6 +6,7 @@ import Working from "./Working";
 import { useLocation } from "react-router-dom";
 import SearchResults from "./SearchResults";
 import { AuthContext } from "../context/AuthContext";
+import Footer from "../components/ui/footer";
 
 const Layout = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const {User,setUser}=useContext(AuthContext)
       <DealsPage />
       <SkymateWhat />
       <Working />
+      <Footer/>
       </div>
   );
 };
