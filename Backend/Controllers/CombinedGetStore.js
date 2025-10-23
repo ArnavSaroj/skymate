@@ -36,6 +36,7 @@ export const CombinedGetStore = async (req, res) => {
       }),
 
       // SpiceJet Promise
+
       new Promise(async (resolve) => {
         try {
           const mockRes = {
@@ -78,7 +79,7 @@ export const CombinedGetStore = async (req, res) => {
       }),
     ];
 
-    const [indigoResponse, spicejetResponse, akasaResponse] =
+    const [indigoResponse, akasaResponse,spicejetResponse] =
       await Promise.allSettled(promises);
 
     // Process Indigo results
@@ -159,9 +160,10 @@ export const CombinedGetStore = async (req, res) => {
         results.spicejet.inserted +
         results.akasa.inserted,
       errors:
-        results.indigo.errors + results.spicejet.errors + results.akasa.errors,
+        // here i hv removed spicejet for now lets see how the application performs 
+        results.indigo.errors  + results.akasa.errors+results.spicejet.errors,
       total:
-        results.indigo.total + results.spicejet.total + results.akasa.total,
+        results.spicejet.total+results.indigo.total  + results.akasa.total,
       successfulAirlines: [
         results.indigo.status === "success" ? "Indigo" : null,
         results.spicejet.status === "success" ? "SpiceJet" : null,

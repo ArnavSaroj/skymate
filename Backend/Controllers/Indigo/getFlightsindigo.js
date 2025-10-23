@@ -3,6 +3,19 @@ import randomUseragent from "random-useragent";
 import fetchToken from "../../Auth/Indigo/fetchToken.js";
 import axios from "axios";
 import { supabase } from "../../Config/supabaseClient.js";
+import { Writable } from "stream";
+import chain from "stream-chain";
+import pickPkg from "stream-json/filters/Pick.js";
+import streamArrayPkg from "stream-json/streamers/StreamArray.js";
+import streamJsonPkg from "stream-json";
+import pLimit from 'p-limit';
+
+const limit = pLimit(10);
+
+
+const { parser } = streamJsonPkg;
+const { pick } = pickPkg;
+const { streamArray } = streamArrayPkg;
 
 export const getToken = async (req, res) => {
   try {
@@ -145,9 +158,13 @@ export const IndigoSpecific = async (req, res) => {
 export const GetAndStoreFlightsIndigo = async (req, res) => {
   let attempt = 7;
   let lastError;
+  let successCount = 0;
+  let errorCount = 0;
+  let totalProcessed = 0;
 
   while (attempt--) {
     await new Promise((resolve) => setTimeout(resolve, randNumber()));
+
     try {
       const { origin, destination, startDate, endDate } = req.body;
       const the_token = await fetchToken();
@@ -157,7 +174,6 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
         "https://api-prod-booking-skyplus6e.goindigo.in/v2/getfarecalendar",
       ];
       const url = urls[Math.floor(Math.random() * urls.length)];
-
       const randUserAgent = randomUseragent.getRandom();
 
       const axiosRes = await axios.post(
@@ -180,46 +196,87 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
             "User-Agent": randUserAgent,
             Accept: "*/*",
           },
-          timeout: 7000,
+          timeout: 15000,
+          responseType: "stream",
         }
       );
 
-      const flightData = axiosRes.data.data.lowFares;
-
-      
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const flight of flightData) {
-        try {
-          if (
-            !flight.price ||
-            isNaN(parseInt(flight.price)) ||
-            parseInt(flight.price) <= 0
-          ) {
-            errorCount++;
-            continue;
-          }
-          const { data, error } = await supabase.rpc("insert_flight_price", {
-            _airline: "Indigo",
-            _origin: origin,
-            _destination: destination,
-            _departure_date: flight.date,
-            _price: parseInt(flight.price),
-            _source_site: "Indigo",
-          });
-
-          if (error) {
-            console.error("❌ Database error:", error.message);
-            errorCount++;
-          } else {
-            successCount++;
-          }
-        } catch (storeErr) {
-          errorCount++;
-          console.error("❌ Storage error:", storeErr.message);
-        }
+      if (!axiosRes.data || typeof axiosRes.data.pipe !== "function") {
+        throw new Error("Response is not a valid stream");
       }
+
+    
+
+    const writableStream = new Writable({
+  objectMode: true,
+  highWaterMark: 16,
+  write(chunk, encoding, callback) {
+    const flight = chunk.value;
+    totalProcessed++;
+
+    if (!flight.price || isNaN(flight.price) || flight.price <= 0) {
+      errorCount++;
+      return callback();
+    }
+
+    limit(async () => {
+      try {
+        const { error } = await supabase.rpc("insert_flight_price", {
+          _airline: "Indigo",
+          _origin: origin,
+          _destination: destination,
+          _departure_date: flight.date,
+          _price: parseInt(flight.price),
+          _source_site: "Indigo",
+        });
+        if (error) {
+          console.error("❌ DB error:", error.message);
+          errorCount++;
+        } else {
+          successCount++;
+        }
+      } catch (err) {
+        console.error("❌ RPC failed:", err.message);
+        errorCount++;
+      }
+    }).then(() => callback());
+  },
+});
+
+
+      const pipeline = chain([
+        axiosRes.data,
+        parser(),
+        pick({ filter: "data.lowFares" }),
+        streamArray(),
+        writableStream,
+      ]);
+
+      // Wait for pipeline to complete
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error("Stream timeout: 30s exceeded"));
+        }, 30000);
+
+        pipeline.on("error", (err) => {
+          clearTimeout(timeout);
+          console.error("❌ Pipeline error:", err);
+          reject(err);
+        });
+
+        // Listen on the writable stream, not the pipeline
+        writableStream.on("finish", () => {
+          clearTimeout(timeout);
+          console.log("✅ Stream finished successfully");
+          resolve();
+        });
+
+        writableStream.on("error", (err) => {
+          clearTimeout(timeout);
+          console.error("❌ Writable stream error:", err);
+          reject(err);
+        });
+      });
 
       return res.status(200).json({
         status: "success",
@@ -227,20 +284,16 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
         route: `${origin} → ${destination}`,
         inserted: successCount,
         errors: errorCount,
-        total: flightData.length,
+        total: totalProcessed,
       });
     } catch (err) {
       lastError = err;
-      console.error(
-        "Axios error:",
-        err.response ? err.response.data : err.message
-      );
+      console.error("Error:", err.message);
 
-      if ((err.response && err.response.status === 403) || (err.response && err.response.status === 409)){
-        console.log("rate limited trying again in 5 sec");
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-}
-
+      if (err.response && [403, 409].includes(err.response.status)) {
+        console.log("Rate limited, retrying in 5s...");
+        await new Promise((r) => setTimeout(r, 5000));
+      }
     }
   }
 
@@ -248,6 +301,5 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
     status: "error",
     airline: "Indigo",
     message: lastError?.message || "All attempts failed",
-    data: lastError?.response?.data,
   });
 };

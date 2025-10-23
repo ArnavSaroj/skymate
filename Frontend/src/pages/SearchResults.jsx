@@ -114,29 +114,22 @@ const trendPrices = filteredData.map(item => item.price);
   }, [qs]);
 
   return (
-    // opaque container sits above the fixed airplane image
     <div className="relative z-50 bg-white min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center text-center ">
           <div>
-            <div>
+            <div className="flex justify-center"> 
+              {/* this is the graphs which shows trends */}
               <PricesTrends labels={trendLabels} prices={trendPrices}/>
               {/* <PricesTrends /> */}
             </div>
-            <h2 className="text-xl font-semibold ">Search Results</h2>
-            <p className="text-sm text-gray-600">
+            <h2 className="text-3xl font-semibold ">Search Results</h2>
+            <p className="text-xl text-gray-600">
               {displayPayload.from} → {displayPayload.to} •{" "}
               {displayPayload.departure} — {displayPayload.returnDate}
             </p>
           </div>
-          <div>
-            <button
-              onClick={() => navigate(-1)}
-              className="px-3 py-1 bg-gray-200 rounded"
-            >
-              Back
-            </button>
-          </div>
+         
         </div>
         {loading && (
           <div className="py-8 text-center">Searching for flights...</div>

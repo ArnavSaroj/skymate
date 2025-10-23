@@ -5,7 +5,8 @@ const API_BASE_URL = `http://localhost:5000/flight/AllStore`;
 
 
   async function run() {
-  
+        let i = 1;
+
 
   console.log("[CronScraper] starting, routes:", ScrapingRoutes.length);
 
@@ -17,12 +18,13 @@ const API_BASE_URL = `http://localhost:5000/flight/AllStore`;
         },
       });
 
-      
 
       if (response.status >= 200 && response.status < 300) {
-        console.log("Success in inserting data");
+        console.log(`Success in inserting data ${i}`);
+        i = i + 1;
       } else {
-        throw new Error("Unexpected status code: " + response.status);
+        throw new Error(`Route no-${i}Unexpected status code: ` + response.status);
+        i = i + 1;
       }
     } catch (error) {
       console.error("Failed to fetch by cron:", error.message);

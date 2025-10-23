@@ -87,6 +87,12 @@ export default function HomePage() {
     []
   );
 
+  const currentDate = () => {
+    const date = new Date();
+    const localeFormattedDate = date.toISOString().split("T")[0]
+    return localeFormattedDate;
+}
+
   const handleOriginChange = (e) => {
     const value = e.target.value;
     handleInputChange("origin", value);
@@ -141,19 +147,19 @@ export default function HomePage() {
               <div className="ml-10 flex items-baseline space-x-8">
                 <a
                   href="#"
-                  className="text-gray-900 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors"
+                  className="text-black hover:text-sky-600 px-3 py-2 text-md font-medium transition-colors"
                 >
                   Home
                 </a>
                 <a
                   href="/pricing"
-                  className="text-gray-600 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors"
+                  className="text-black hover:text-sky-600 px-3 py-2 text-md font-medium transition-colors"
                 >
                   Pricing
                 </a>
                 <a
                   href="/working"
-                  className="text-gray-600 hover:text-sky-600 px-3 py-2 text-sm font-medium transition-colors"
+                  className="text-black hover:text-sky-600 px-3 py-2 text-md font-medium transition-colors"
                 >
                   How It Works
                 </a>
@@ -163,7 +169,7 @@ export default function HomePage() {
               {!User ? (
                 <Link
                   to="/signup"
-                  className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer"
+                  className="bg-black hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-md font-medium transition-colors hover:cursor-pointer"
                 >
                   Sign In
                 </Link>
@@ -227,6 +233,7 @@ export default function HomePage() {
                     value={searchData.origin}
                     onChange={handleOriginChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-colors"
+                    autoComplete="off"
                   />
                   {originSuggestions.length > 0 && (
                     <ul className="bg-white border rounded-2xl shadow mt-1 absolute z-50 w-full ">
@@ -260,6 +267,7 @@ export default function HomePage() {
                     value={searchData.destination}
                     onChange={handleDestinationChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-colors"
+                    autoComplete="off"
                   />
                   {toSuggestions.length > 0 && (
                     <ul className="bg-white border rounded-2xl shadow mt-1 absolute z-50 w-full ">
@@ -283,6 +291,7 @@ export default function HomePage() {
                   <label
                     htmlFor="startDate"
                     className="block text-sm font-medium text-gray-700 "
+                    
                   >
                     Departure
                   </label>
@@ -293,7 +302,8 @@ export default function HomePage() {
                     onChange={(e) =>
                       handleInputChange("startDate", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-colors"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-colors" autoComplete="off"
+                    min={currentDate()}
                   />
                 </div>
 
@@ -312,6 +322,8 @@ export default function HomePage() {
                       handleInputChange("endDate", e.target.value)
                     }
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none transition-colors"
+                    autoComplete="off"
+                    min={currentDate()}
                   />
                 </div>
 

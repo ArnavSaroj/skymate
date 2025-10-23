@@ -6,6 +6,11 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
+clinic
+
+example.json
+# will remove this later
+model
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
@@ -82,6 +87,7 @@ out
 .nuxt
 dist
 .output
+dist/
 
 # Gatsby files
 .cache/
@@ -94,7 +100,7 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
-.cache
+.cachein myin 
 
 # Sveltekit cache directory
 .svelte-kit/

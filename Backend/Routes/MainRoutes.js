@@ -11,6 +11,7 @@ import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
 import { create_User } from '../Controllers/userReadWrite.js';
 import { CreateBookmark, DeleteBookmark, PriceDropBookmark } from '../Controllers/bookmark/bookmark.js';
 import getHistory from '../Controllers/trends/getHistory.js';
+import { AirIndiaRoutesData } from '../Controllers/AirIndia/AirIndiaApi.js';
 // import validate from '../Controllers/lib/validator.js';
 // import {body} from 'express-validator'
 
@@ -23,6 +24,8 @@ router.post("/allflights", valdiateFlightRequest, getAllFlights)
 router.post("/flights/akasa", valdiateFlightRequest, AkasaDataSpecific)
 router.post("/flights/indigo", validateFlightRequest, IndigoSpecific)
 router.post("/flights/spicejet", validateFlightRequest, SpicejetSpecific)
+router.post("/flights/AirIndia",AirIndiaRoutesData)
+
 
 // this is for storing and getting data into db
 router.post("/flights/indigo/StoreGet", valdiateFlightRequest, GetAndStoreFlightsIndigo);
