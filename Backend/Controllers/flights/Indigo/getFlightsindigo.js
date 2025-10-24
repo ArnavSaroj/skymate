@@ -1,8 +1,8 @@
-import randNumber from "../../Utility/randtimout.js";
+import randNumber from "../../../Utility/randtimout.js";
 import randomUseragent from "random-useragent";
-import fetchToken from "../../Auth/Indigo/fetchToken.js";
+import fetchToken from "../../../Auth/Indigo/fetchToken.js";
 import axios from "axios";
-import { supabase } from "../../Config/supabaseClient.js";
+import { supabase } from "../../../Config/supabaseClient.js";
 import { Writable } from "stream";
 import chain from "stream-chain";
 import pickPkg from "stream-json/filters/Pick.js";
@@ -229,14 +229,15 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
           _price: parseInt(flight.price),
           _source_site: "Indigo",
         });
+         
         if (error) {
-          console.error("❌ DB error:", error.message);
+           console.error("❌ DB error:", error.message);
           errorCount++;
         } else {
           successCount++;
         }
       } catch (err) {
-        console.error("❌ RPC failed:", err.message);
+        console.error("❌ RPC failed:", err);
         errorCount++;
       }
     }).then(() => callback());

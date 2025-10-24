@@ -1,6 +1,6 @@
-import {GetdataAkasa} from "../Controllers/Akasa/Akasaapi.js";
-import { GetFlightData } from "../Controllers/Indigo/getFlightsindigo.js";
-import { GetFlightDataSpicejet } from "../Controllers/Spicejet/getFlightsSpicejet.js";
+import {GetdataAkasa} from "../Controllers/flights/Akasa/Akasaapi.js";
+import { GetFlightData } from "../Controllers/flights/Indigo/getFlightsindigo.js";
+import { GetFlightDataSpicejet } from "../Controllers/flights/Spicejet/getFlightsSpicejet.js";
 import withRetries from "../Utility/WithRetries.js";
 
 export const getAllFlights = async (req, res) => {

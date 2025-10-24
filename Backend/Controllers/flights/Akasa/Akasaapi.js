@@ -1,8 +1,9 @@
 import axios from "axios";
 import randomUseragent from "random-useragent";
-import randNumber from "../../Utility/randtimout.js";
-import attachEncodedTime from "../../Utility/attachencodedtime.js";
-import { supabase } from "../../Config/supabaseClient.js";
+import randNumber from "../../../Utility/randtimout.js";
+
+import attachEncodedTime from "../../../Utility/attachencodedtime.js";
+import { supabase } from "../../../Config/supabaseClient.js";
 import { Writable } from "stream";
 import chain from "stream-chain";
 import pickPkg from "stream-json/filters/Pick.js";

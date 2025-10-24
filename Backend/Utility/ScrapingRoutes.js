@@ -178,6 +178,88 @@ export const ScrapingRoutes = [
     destination: "MAA",
     startDate: formattedDate,
     endDate: oneMonthAfterDate,
-  }
+  },
   // hyderabad-chennai
+   {
+    origin: "BOM",
+    destination: "CCU",
+    startDate: formattedDate,
+    endDate: oneMonthAfterDate,
+  }
+  //  mumbai-kolkata
 ];
+
+
+
+
+
+// export const ScrapingRoutes=[// ...existing code...
+// // mumbai-chennai
+// , {
+//   origin: "HYD",
+//   destination: "MAA",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }
+// // hyderabad-chennai
+// , {
+//   origin: "GAU",
+//   destination: "DEL",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Guwahati - Delhi
+// {
+//   origin: "NAG",
+//   destination: "BOM",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Nagpur - Mumbai
+// {
+//   origin: "BOM",
+//   destination: "PNQ",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Mumbai - Pune
+// {
+//   origin: "DEL",
+//   destination: "GOI",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Delhi - Goa
+// {
+//   origin: "BLR",
+//   destination: "GOI",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Bangalore - Goa
+// {
+//   origin: "DEL",
+//   destination: "SXR",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Delhi - Srinagar
+// {
+//   origin: "PNQ",
+//   destination: "HYD",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Pune - Hyderabad
+// {
+//   origin: "COK",
+//   destination: "HYD",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Kochi - Hyderabad
+// {
+//   origin: "VNS",
+//   destination: "DEL",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// }, // Varanasi - Delhi
+// {
+//   origin: "CCU",
+//   destination: "BLR",
+//   startDate: formattedDate,
+//   endDate: oneMonthAfterDate,
+// } // Kolkata - Bangalore
+// ]

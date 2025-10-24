@@ -1,8 +1,9 @@
-import randNumber from "../../Utility/randtimout.js";
+import randNumber from "../../../Utility/randtimout.js";
+
 import randomUseragent from "random-useragent";
-import fetchSpicejetToken from "../../Auth/Spicejt/fetchSpicejetToken.js";
+import fetchSpicejetToken from "../../../Auth/Spicejt/fetchSpicejetToken.js";
 import axios from "axios";
-import { supabase } from "../../Config/supabaseClient.js";
+import { supabase } from "../../../Config/supabaseClient.js";
 
 const languages = [
   "en-US,en;q=0.9",

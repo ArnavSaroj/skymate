@@ -1,6 +1,7 @@
-import { GetAndStoreAkasa } from "./Akasa/Akasaapi.js";
-import { GetAndStoreFlightsIndigo } from "./Indigo/getFlightsindigo.js";
-import { GetAndStoreSpicejet } from "./Spicejet/getFlightsSpicejet.js";
+import { GetAndStoreAkasa } from "./flights/Akasa/Akasaapi.js";
+import { GetAndStoreFlightsIndigo } from "./flights/Indigo/getFlightsindigo.js";
+import { GetAndStoreSpicejet } from "./flights/Spicejet/getFlightsSpicejet.js";
+import { StoreGetAirIndia } from "./flights/AirIndia/AirIndiaApi.js";
 
 export const CombinedGetStore = async (req, res) => {
   try {
@@ -10,6 +11,7 @@ export const CombinedGetStore = async (req, res) => {
       indigo: { status: "pending", inserted: 0, errors: 0, total: 0 },
       spicejet: { status: "pending", inserted: 0, errors: 0, total: 0 },
       akasa: { status: "pending", inserted: 0, errors: 0, total: 0 },
+      airIndia: { status: "pending", inserted: 0, errors: 0, total: 0 },
     };
 
     const promises = [
@@ -25,7 +27,7 @@ export const CombinedGetStore = async (req, res) => {
                   statusCode: code,
                   data: data,
                 });
-                return mockRes; 
+                return mockRes;
               },
             }),
           };
@@ -77,9 +79,30 @@ export const CombinedGetStore = async (req, res) => {
           resolve({ success: false, error: err.message });
         }
       }),
+
+      // airIndia promise
+      new Promise(async (resolve) => {
+        try {
+          const mockRes = {
+            status: (code) => ({
+              json: (data) => {
+                resolve({
+                  success: true,
+                  statusCode: code,
+                  data: data,
+                });
+                return mockRes;
+              },
+            }),
+          };
+          await StoreGetAirIndia(req, mockRes);
+        } catch (error) {
+          resolve({ success: false, error: error.message });
+        }
+      }),
     ];
 
-    const [indigoResponse, akasaResponse,spicejetResponse] =
+    const [indigoResponse, akasaResponse, spicejetResponse, AirIndiaResponse] =
       await Promise.allSettled(promises);
 
     // Process Indigo results
@@ -127,6 +150,7 @@ export const CombinedGetStore = async (req, res) => {
         errors: 0,
         total: 0,
       };
+      console.log(`❌ Spicejet:Failed`);
     }
 
     // Process Akasa results
@@ -152,22 +176,53 @@ export const CombinedGetStore = async (req, res) => {
       };
       console.log(`❌ Akasa: Failed`);
     }
+    // process airindia
+    if (
+      AirIndiaResponse.status === "fulfilled" &&
+      AirIndiaResponse.value.success &&
+      AirIndiaResponse.value.statusCode === 200
+    ) {
+      results.airIndia = {
+        status: "success",
+        inserted: AirIndiaResponse.value.data.inserted || 0,
+        errors: AirIndiaResponse.value.data.errors || 0,
+        total: AirIndiaResponse.value.data.total || 0,
+      };
+      console.log(`✅ AirIndia: ${results.airIndia.inserted} flights stored`);
+    } else {
+      results.airIndia = {
+        status: "error",
+        message: AirIndiaResponse.value?.error || "Failed to fetch",
+        inserted: 0,
+        errors: 0,
+        total: 0,
+      };
+      console.log(`❌ AirIndia: Failed`);
+    }
 
     // Calculate totals
     const totals = {
       inserted:
         results.indigo.inserted +
         results.spicejet.inserted +
-        results.akasa.inserted,
+        results.akasa.inserted +
+        results.airIndia.inserted,
       errors:
-        // here i hv removed spicejet for now lets see how the application performs 
-        results.indigo.errors  + results.akasa.errors+results.spicejet.errors,
+        // here i hv removed spicejet for now lets see how the application performs
+        results.indigo.errors +
+        results.akasa.errors +
+        results.spicejet.errors +
+        results.airIndia.errors,
       total:
-        results.spicejet.total+results.indigo.total  + results.akasa.total,
+        results.spicejet.total +
+        results.indigo.total +
+        results.akasa.total +
+        results.airIndia.total,
       successfulAirlines: [
         results.indigo.status === "success" ? "Indigo" : null,
         results.spicejet.status === "success" ? "SpiceJet" : null,
         results.akasa.status === "success" ? "Akasa" : null,
+        results.airIndia.status === "success" ? "AirIndia" : null,
       ].filter(Boolean),
     };
 
@@ -181,7 +236,7 @@ export const CombinedGetStore = async (req, res) => {
       period: endDate ? `${startDate} to ${endDate}` : startDate,
       summary: totals,
       airlines: results,
-      message: `Successfully processed ${totals.successfulAirlines.length}/3 airlines`,
+      message: `Successfully processed ${totals.successfulAirlines.length}/4 airlines`,
     });
   } catch (err) {
     console.error("❌ Some error occurred:", err.message);

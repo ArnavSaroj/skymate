@@ -1,17 +1,16 @@
 import express from 'express'
 import { getAllFlights } from "../Controllers/AllFlights.js";
 import valdiateFlightRequest from "../middlewares/ValdiateFlightRequest.js";
-import { AkasaDataSpecific, GetAndStoreAkasa } from '../Controllers/Akasa/Akasaapi.js';
+import { AkasaDataSpecific, GetAndStoreAkasa } from '../Controllers/flights/Akasa/Akasaapi.js';
 import validateFlightRequest from '../middlewares/ValdiateFlightRequest.js';
-import { GetAndStoreFlightsIndigo, IndigoSpecific } from '../Controllers/Indigo/getFlightsindigo.js';
-import { GetAndStoreSpicejet, SpicejetSpecific } from '../Controllers/Spicejet/getFlightsSpicejet.js';
-import { CombinedGetStore } from '../Controllers/combinedGetStore.js';
+import { GetAndStoreFlightsIndigo, IndigoSpecific } from '../Controllers/flights/Indigo/getFlightsindigo.js';
+import { GetAndStoreSpicejet, SpicejetSpecific } from '../Controllers/flights/Spicejet/getFlightsSpicejet.js';
+import { CombinedGetStore } from '../Controllers/CombinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
 import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
-import { create_User } from '../Controllers/userReadWrite.js';
 import { CreateBookmark, DeleteBookmark, PriceDropBookmark } from '../Controllers/bookmark/bookmark.js';
 import getHistory from '../Controllers/trends/getHistory.js';
-import { AirIndiaRoutesData } from '../Controllers/AirIndia/AirIndiaApi.js';
+import { AirIndiaRoutesData, StoreGetAirIndia } from '../Controllers/flights/AirIndia/AirIndiaApi.js';
 // import validate from '../Controllers/lib/validator.js';
 // import {body} from 'express-validator'
 
@@ -24,7 +23,7 @@ router.post("/allflights", valdiateFlightRequest, getAllFlights)
 router.post("/flights/akasa", valdiateFlightRequest, AkasaDataSpecific)
 router.post("/flights/indigo", validateFlightRequest, IndigoSpecific)
 router.post("/flights/spicejet", validateFlightRequest, SpicejetSpecific)
-router.post("/flights/AirIndia",AirIndiaRoutesData)
+router.post("/flights/AirIndia", AirIndiaRoutesData)
 
 
 // this is for storing and getting data into db
@@ -33,6 +32,9 @@ router.post("/flights/indigo/StoreGet", valdiateFlightRequest, GetAndStoreFlight
 router.post("/flights/spicejet/StoreGet", validateFlightRequest, GetAndStoreSpicejet)
 
 router.post("/flights/akasa/StoreGet", validateFlightRequest, GetAndStoreAkasa);
+
+router.post("/flights/AirIndia/StoreGet", StoreGetAirIndia)
+
 
 // this routes combines everything and also stores
 router.post("/flight/AllStore", CombinedGetStore);
