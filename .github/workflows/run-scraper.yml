@@ -22,6 +22,15 @@ jobs:
         working-directory: ./Backend
         run: npm install
 
+      - name: Start Backend Server
+        working-directory: ./Backend
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
+        run: |
+          nohup node Server.js > server.log 2>&1 &
+          sleep 8
+
       - name: Run scraper
         working-directory: ./Backend
         env:
