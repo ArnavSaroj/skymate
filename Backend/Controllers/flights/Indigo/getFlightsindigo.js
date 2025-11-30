@@ -8,10 +8,9 @@ import chain from "stream-chain";
 import pickPkg from "stream-json/filters/Pick.js";
 import streamArrayPkg from "stream-json/streamers/StreamArray.js";
 import streamJsonPkg from "stream-json";
-import pLimit from 'p-limit';
+import pLimit from "p-limit";
 
 const limit = pLimit(10);
-
 
 const { parser } = streamJsonPkg;
 const { pick } = pickPkg;
@@ -37,14 +36,10 @@ export const GetFlightData = async (params) => {
       await new Promise((resolve) => setTimeout(resolve, randNumber()));
       const the_token = await fetchToken();
 
-      const urls = [
-        "https://api-prod-booking-skyplus6e.goindigo.in/v1/getfarecalendar",
-        "https://api-prod-booking-skyplus6e.goindigo.in/v2/getfarecalendar",
-      ];
-      const url = urls[Math.floor(Math.random() * urls.length)];
+      const url = "https://api-prod-booking-skyplus6e.goindigo.in/v1/getfarecalendar";
+       
 
       const randUserAgent = randomUseragent.getRandom();
-
       const axiosRes = await axios.post(
         url,
         {
@@ -161,7 +156,6 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
   let successCount = 0;
   let errorCount = 0;
   let totalProcessed = 0;
-
   while (attempt--) {
     await new Promise((resolve) => setTimeout(resolve, randNumber()));
 
@@ -169,11 +163,9 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
       const { origin, destination, startDate, endDate } = req.body;
       const the_token = await fetchToken();
 
-      const urls = [
-        "https://api-prod-booking-skyplus6e.goindigo.in/v1/getfarecalendar",
-        "https://api-prod-booking-skyplus6e.goindigo.in/v2/getfarecalendar",
-      ];
-      const url = urls[Math.floor(Math.random() * urls.length)];
+      const url ="https://api-prod-booking-skyplus6e.goindigo.in/v1/getfarecalendar";
+
+      // const url = urls[Math.floor(Math.random() * urls.length)];
       const randUserAgent = randomUseragent.getRandom();
 
       const axiosRes = await axios.post(
@@ -196,54 +188,50 @@ export const GetAndStoreFlightsIndigo = async (req, res) => {
             "User-Agent": randUserAgent,
             Accept: "*/*",
           },
-          timeout: 15000,
+          timeout: 8000,
           responseType: "stream",
         }
       );
-
       if (!axiosRes.data || typeof axiosRes.data.pipe !== "function") {
         throw new Error("Response is not a valid stream");
       }
 
-    
+      const writableStream = new Writable({
+        objectMode: true,
+        highWaterMark: 16,
+        write(chunk, encoding, callback) {
+          const flight = chunk.value;
+          totalProcessed++;
 
-    const writableStream = new Writable({
-  objectMode: true,
-  highWaterMark: 16,
-  write(chunk, encoding, callback) {
-    const flight = chunk.value;
-    totalProcessed++;
+          if (!flight.price || isNaN(flight.price) || flight.price <= 0) {
+            errorCount++;
+            return callback();
+          }
 
-    if (!flight.price || isNaN(flight.price) || flight.price <= 0) {
-      errorCount++;
-      return callback();
-    }
+          limit(async () => {
+            try {
+              const { error } = await supabase.rpc("insert_flight_price", {
+                _airline: "Indigo",
+                _origin: origin,
+                _destination: destination,
+                _departure_date: flight.date,
+                _price: parseInt(flight.price),
+                _source_site: "Indigo",
+              });
 
-    limit(async () => {
-      try {
-        const { error } = await supabase.rpc("insert_flight_price", {
-          _airline: "Indigo",
-          _origin: origin,
-          _destination: destination,
-          _departure_date: flight.date,
-          _price: parseInt(flight.price),
-          _source_site: "Indigo",
-        });
-         
-        if (error) {
-           console.error("❌ DB error:", error.message);
-          errorCount++;
-        } else {
-          successCount++;
-        }
-      } catch (err) {
-        console.error("❌ RPC failed:", err);
-        errorCount++;
-      }
-    }).then(() => callback());
-  },
-});
-
+              if (error) {
+                console.error("❌ DB error:", error.message);
+                errorCount++;
+              } else {
+                successCount++;
+              }
+            } catch (err) {
+              console.error("❌ RPC failed:", err);
+              errorCount++;
+            }
+          }).then(() => callback());
+        },
+      });
 
       const pipeline = chain([
         axiosRes.data,

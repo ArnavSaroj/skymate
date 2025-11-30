@@ -11,6 +11,7 @@ import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
 import { CreateBookmark, DeleteBookmark, PriceDropBookmark } from '../Controllers/bookmark/bookmark.js';
 import getHistory from '../Controllers/trends/getHistory.js';
 import { AirIndiaRoutesData, StoreGetAirIndia } from '../Controllers/flights/AirIndia/AirIndiaApi.js';
+import topDeals from '../Controllers/trends/topDeals.js';
 // import validate from '../Controllers/lib/validator.js';
 // import {body} from 'express-validator'
 
@@ -58,5 +59,8 @@ router.post("/api/checkBookmark",PriceDropBookmark)
 
 // routes for graphs feature
 router.post("/api/historicPrice", getHistory);
+
+// routes for top deals feature
+router.get("/api/top_deals", topDeals);
 
 export default router;

@@ -2,7 +2,7 @@ import axios from "axios";
 import { ScrapingRoutes } from "./ScrapingRoutes.js";
 import pLimit from "p-limit";
 
-const limit = pLimit(3);
+const limit = pLimit(4);
 
 const API_BASE_URL = `http://localhost:5000/flight/AllStore`;
 

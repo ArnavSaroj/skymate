@@ -6,7 +6,7 @@ export function TopDealsSection() {
     {
       id: 1,
       // image: "/placeholder.svg"image to be added,
-      price: "$4567",
+      price: "₹4567",
       route: "NEW DELHI TO MUMBAI",
       date: "13-07-2025",
       airline: "AKASA",
@@ -14,7 +14,7 @@ export function TopDealsSection() {
     {
       id: 2,
       // image to be added
-      price: "4000$",
+      price: "₹4000",
       route: "MUMBAI TO CHENNAI",
       date: "12-07-2025",
       airline: "INDIGO",
@@ -22,7 +22,7 @@ export function TopDealsSection() {
     {
       id: 3,
       image: "/images/landscape-placeholder.svg",
-      price: "3000$",
+      price: "₹3000",
       route: "CHENNAI TO BENGALURU",
       date: "15-07-2025",
       airline: "AKASA",
@@ -30,7 +30,7 @@ export function TopDealsSection() {
     {
       id: 4,
       image: "/images/mumbai.jpg",
-      price: "$2199",
+      price: "₹2199",
       route: "NEW DELHI TO MUMBAI",
       date: "20-07-2025",
       airline: "SPICEJET",
@@ -38,7 +38,7 @@ export function TopDealsSection() {
     {
       id: 5,
       image: "/images/tajmahal.jpg",
-      price: "$7899",
+      price: "₹7899",
       route: "MUMBAI TO DELHI",
       date: "22-07-2025",
       airline: "INDIGO",
@@ -46,7 +46,7 @@ export function TopDealsSection() {
       {
       id: 6,
       image: "/placeholder.svg",
-      price: "$7899",
+      price: "₹7899",
       route: "MUMBAI TO DELHI",
       date: "22-07-2025",
       airline: "INDIGO",
