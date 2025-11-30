@@ -35,7 +35,7 @@ jobs:
       - name: Run scraper
         working-directory: ./Backend
         env:
-          supabaseUrl: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          supabaseServiceRole: ${{ secrets.SUPABASE_SERVICE_ROLE }}
+           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+           SUPABASE_SERVICE_ROLE: ${{ secrets.SUPABASE_SERVICE_ROLE }}
         run: |
           node Utility/CronScraper.js
