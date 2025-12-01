@@ -1,57 +1,42 @@
+import { useEffect,useState } from "react"
 import { DealCard } from "./deal-card"
+import {Link} from 'react-router-dom'
 
-export function TopDealsSection() {
-  // Sample deals data matching the design
-  const deals = [
-    {
-      id: 1,
-      // image: "/placeholder.svg"image to be added,
-      price: "₹4567",
-      route: "NEW DELHI TO MUMBAI",
-      date: "13-07-2025",
-      airline: "AKASA",
-    },
-    {
-      id: 2,
-      // image to be added
-      price: "₹4000",
-      route: "MUMBAI TO CHENNAI",
-      date: "12-07-2025",
-      airline: "INDIGO",
-    },
-    {
-      id: 3,
-      image: "/images/landscape-placeholder.svg",
-      price: "₹3000",
-      route: "CHENNAI TO BENGALURU",
-      date: "15-07-2025",
-      airline: "AKASA",
-    },
-    {
-      id: 4,
-      image: "/images/mumbai.jpg",
-      price: "₹2199",
-      route: "NEW DELHI TO MUMBAI",
-      date: "20-07-2025",
-      airline: "SPICEJET",
-    },
-    {
-      id: 5,
-      image: "/images/tajmahal.jpg",
-      price: "₹7899",
-      route: "MUMBAI TO DELHI",
-      date: "22-07-2025",
-      airline: "INDIGO",
-    },
-      {
-      id: 6,
-      image: "/placeholder.svg",
-      price: "₹7899",
-      route: "MUMBAI TO DELHI",
-      date: "22-07-2025",
-      airline: "INDIGO",
-    },
-  ]
+const API_BASE_URL="http://localhost:5000/api/top_deals"
+
+export function TopDealsSection(props) {
+
+  const fetchDeals = async() => {
+  try {
+    const res = await fetch(API_BASE_URL, {
+      method: "GET", headers: {
+      "Content-Type":"application/json"
+      }
+    })
+    
+    if (!res.ok) {
+      throw new Error("some error ocurred")
+    }
+
+    const data = await res.json();
+    return data.top_Deals_found;
+
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+  const [deals, setDeals] = useState(null);
+
+  useEffect(() => {
+
+    fetchDeals().then((json) => {
+      const limited=props.limit?json.slice(0, props.limit):json;
+      setDeals(limited);
+
+    })
+
+  }, []);
 
   return (
     <section className="bg-transparent relative py-16 border-t border-gray-100 ">
@@ -68,13 +53,14 @@ export function TopDealsSection() {
 
         {/* Deals Grid - Horizontal scroll on mobile, grid on desktop */}
         <div className="flex gap-6 overflow-x-auto pb-4 md:grid md:grid-cols-3 lg:grid-cols-5 md:gap-6 md:overflow-visible z-10" >
-          {deals.map((deal) => (
+          {deals&& deals.map((deal) => (
             <div key={deal.id} className="flex-shrink-0 ">
               <DealCard
-                image={deal.image}
-                price={deal.price}
-                route={deal.route}
-                date={deal.date}
+                image={ deal.image}
+                price={deal.current_price}
+                origin={deal.origin}
+                destination={deal.destination}
+                date={deal.departure}
                 airline={deal.airline}
               />
             </div>
@@ -82,12 +68,15 @@ export function TopDealsSection() {
         </div>
 
         {/* View All Deals Button */}
+        <Link to="/deals">
         <div className="text-center mt-12">
           <button className="bg-sky-600 hover:bg-sky-700 text-white px-6 py-3 rounded-lg font-medium transition-colors hover:cursor-pointer">
             View All Deals
           </button>
-        </div>
+          </div>
+          </Link>
       </div>
+      
     </section>
   )
 }

@@ -4,7 +4,7 @@ import { TopDealsSection } from '../components/top-deals/top_dealSection'
 const DealsPage = () => {
   return (
     <div>
-      <TopDealsSection/>
+      <TopDealsSection limit="6"/>
     </div>
   )
 }
