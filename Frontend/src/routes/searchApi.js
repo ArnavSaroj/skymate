@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://skymate-backend-only.onrender.com/api";
+
 
 export const SearchApi = async (body) => {
   // accept startDate/endDate and other variants

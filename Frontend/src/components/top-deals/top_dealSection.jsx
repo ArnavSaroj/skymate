@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DealCard } from "./deal-card";
 
-const API_BASE_URL = "http://localhost:5000/api/top_deals";
+const API_BASE_URL = "https://skymate-backend-only.onrender.com/api/top_deals";
 
 export function TopDealsSection(props) {
   const fetchDeals = async () => {

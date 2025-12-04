@@ -3,7 +3,7 @@ const fetchNames = async (query) => {
     {
         return [];
     }
-    const res = await fetch(`http://localhost:5000/api/airport/name?q=${query}`)
+    const res = await fetch(`https://skymate-backend-only.onrender.com/api/airport/name?q=${query}`)
     if (!res.ok) return [];
     return res.json();
 }
