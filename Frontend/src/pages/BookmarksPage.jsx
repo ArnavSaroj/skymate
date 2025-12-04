@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Bookmarks from "../components/bookmarks/bookmarks";
+import Bookmarks from "../components/bookmarks/Bookmarks";
 import { supabase } from "../lib/supabaseBrowser";
 
 const API_BASE_URL = "http://localhost:5000/api/getBookmarks";
