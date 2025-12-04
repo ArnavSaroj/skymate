@@ -1,22 +1,20 @@
 import React, { useContext } from "react";
 import HomePage from "./HomePage";
 import DealsPage from "./DealsPage";
-import SkymateWhat from "./skymateWhat";
 import Working from "./Working";
 import { useLocation } from "react-router-dom";
 import SearchResults from "./SearchResults";
 import { AuthContext } from "../context/AuthContext";
 import Footer from "../components/ui/footer";
 import { ToastContainer } from "react-toastify";
-import BookmarksPage from "./BookmarksPage";
-import HowWeWork from "./HowWeWork";
+import SkymateWhat from "./skymateWhat";
 
 const Layout = () => {
   const location = useLocation();
-const {User,setUser}=useContext(AuthContext)
+  const { User, setUser } = useContext(AuthContext);
   return (
     <div className="w-full min-h-screen bg-white">
-      <ToastContainer/>
+      <ToastContainer />
       <img
         src="/plane_flying.jpg"
         alt="Airplane"
@@ -27,8 +25,8 @@ const {User,setUser}=useContext(AuthContext)
       <DealsPage />
       <SkymateWhat />
       <Working />
-      <Footer/>
-      </div>
+      <Footer />
+    </div>
   );
 };
 
