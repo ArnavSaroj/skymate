@@ -7,12 +7,16 @@ import { useLocation } from "react-router-dom";
 import SearchResults from "./SearchResults";
 import { AuthContext } from "../context/AuthContext";
 import Footer from "../components/ui/footer";
+import { ToastContainer } from "react-toastify";
+import BookmarksPage from "./BookmarksPage";
+import HowWeWork from "./HowWeWork";
 
 const Layout = () => {
   const location = useLocation();
 const {User,setUser}=useContext(AuthContext)
   return (
     <div className="w-full min-h-screen bg-white">
+      <ToastContainer/>
       <img
         src="/plane_flying.jpg"
         alt="Airplane"

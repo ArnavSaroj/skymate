@@ -8,7 +8,7 @@ import { GetAndStoreSpicejet, SpicejetSpecific } from '../Controllers/flights/Sp
 import { CombinedGetStore } from '../Controllers/CombinedGetStore.js';
 import  {getNames}  from '../Controllers/getapis/getNames.js';
 import  SearchGetFlights  from '../Controllers/SearchGetFlights.js';
-import { CreateBookmark, DeleteBookmark, PriceDropBookmark } from '../Controllers/bookmark/bookmark.js';
+import { CreateBookmark, DeleteBookmark, getAllBookmarks} from '../Controllers/bookmark/bookmark.js';
 import getHistory from '../Controllers/trends/getHistory.js';
 import { AirIndiaRoutesData, StoreGetAirIndia } from '../Controllers/flights/AirIndia/AirIndiaApi.js';
 import topDeals from '../Controllers/trends/topDeals.js';
@@ -52,9 +52,8 @@ router.get("/api/SearchFlights", SearchGetFlights)
 // routes for bookmark creation
 router.post("/api/create_bookmark", CreateBookmark)
 router.post("/api/delete_bookmark", DeleteBookmark)
+router.post("/api/getBookmarks",getAllBookmarks)
 
-// routes for checking bookmark email
-router.post("/api/checkBookmark",PriceDropBookmark)
 
 
 // routes for graphs feature

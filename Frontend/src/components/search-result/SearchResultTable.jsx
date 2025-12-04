@@ -8,7 +8,7 @@ import "reactjs-popup/dist/index.css";
 import { FiAlertTriangle } from "react-icons/fi";
 
 export default function FlightResultsTable({ flights = [] }) {
-  const { User, setUser } = useContext(AuthContext) ?? {};
+  const { User, setUser } = useContext(AuthContext) ;
 
   const [BookmarkedIds, setBookmarkIds] = useState([]);
   const [showFlightsPopup, setShowFlightsPopup] = useState(true);
@@ -17,10 +17,11 @@ export default function FlightResultsTable({ flights = [] }) {
     console.log(User);
 
     if (!User) {
-      return toast("you need to be logged in to access this functionality!!!");
+      toast("🚨 you need to be logged in to access this functionality!!!");
+      return;
     }
 
-    setBookmarkIds((prev) => {
+    setBookmarkIds((prev) => {``
       if (prev.includes(id)) {
         return prev.filter((item) => item !== id);
       } else {

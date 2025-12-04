@@ -3,6 +3,9 @@ import mainRoutes from "./Routes/MainRoutes.js";
 import cors from "cors";
 import { supabase } from "./Config/supabaseClient.js";
 import { monitorEventLoopDelay } from 'perf_hooks';
+import dotenv from 'dotenv'
+import path from 'path'
+
 
 const h = monitorEventLoopDelay({ resolution: 10 });
 h.enable();
@@ -11,7 +14,7 @@ setInterval(() => {
   console.log(`Event Loop Delay (mean): ${(h.mean / 1e6).toFixed(2)} ms`);
 }, 5000);
 
-
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 const app = express();
 app.use(express.json());

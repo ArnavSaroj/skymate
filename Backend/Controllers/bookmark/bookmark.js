@@ -1,6 +1,6 @@
+import { BiBookOpen } from "react-icons/bi";
 import { supabase } from "../../Config/supabaseClient.js";
-import axios from 'axios'
-import { BookmarkEmail } from "../../Utility/sendEmail.js";
+import nodemailer from "nodemailer";
 
 const currentDate = new Date();
 
@@ -12,8 +12,6 @@ const formattedDate = `${year}-${month}-${day}`;
 
 const oneMonth = String(currentDate.getMonth() + 2).padStart(2, "0");
 const oneMonthAfterDate = `${year}-${oneMonth}-${day}`;
-
-const API_BASE_URL = `http://localhost:5000/flight/AllStore`;
 
 export const CreateBookmark = async (req, res) => {
   //date is optional and airline is optional too
@@ -80,52 +78,92 @@ export const DeleteBookmark = async (req, res) => {
   }
 };
 
-export const PriceDropBookmark = async (req, res) => {
+export const getAllBookmarks = async (req, res) => {
   try {
-    const { data, error } = await supabase
+    const { userId } = req.body;
+
+    const { data: bookmarks, error: bookmarksError } = await supabase
       .from("bookmarks")
-      .select("route_id,target_price","target_price");
+      .select()
+      .eq("user_id", userId);
 
-    if (error) {
-      return res.status(500).json({ message: error.message });
+    if (bookmarksError) throw bookmarksError;
+    if (!bookmarks || bookmarks.length === 0) {
+      return res.status(404).json({ message: "No bookmarks found" });
     }
 
-    for (const bookmark of data) {
-      let route_id = bookmark.route_id;
+    const bookmark = bookmarks[0]; 
 
-      const { data: routeData, err: routeError } = await supabase
-        .from("routes")
-        .select("origin_iata_code,destination_iata_code")
-        .eq("id", route_id);
+    const { data: routes, error: routesError } = await supabase
+      .from("routes")
+      .select()
+      .eq("id", bookmark.route_id);
 
-      for (const routes of routeData) {
-        try {
-          let route = {
-            origin:routes.origin_iata_code,
-              destination:routes.destination_iata_code,
-            startDate: formattedDate,
-            endDae:oneMonthAfterDate
-}
-
-          const response = await axios.post(API_BASE_URL, route, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          console.log(response.data);
-          // BookmarkEmail(data.target_price, response.price);
-
-          if (response.status >= 200 && response.status < 300) {
-            console.log("Success in inserting data");
-          } else {
-            throw new Error("Unexpected status code: " + response.status);
-          }
-        } catch (error) {
-          res.status(500).json({ message: error.message });
-        }
-      }
+    if (routesError) throw routesError;
+    if (!routes || routes.length === 0) {
+      return res.status(404).json({ message: "Route not found" });
     }
+
+    const route = routes[0];
+
+    return res.status(200).json({
+      target_price: bookmark.target_price,
+      route_info: route,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// TODO this is the actual price check function which will check any drop in prices
+export const PriceDropCheck = async () => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "anrav277@gmail.com",
+        pass: process.env.GOOGLE_APP_PASSWORD,
+      },
+    });
+
+    const { data: bookmarks, error: firstError } = await supabase
+      .from("bookmarks")
+      .select("user_id, target_price,route_id");
+
+    if (firstError) throw firstError;
+
+    bookmarks.forEach(async (bookmark) => {
+      const { data: flightData, error: secondError } = await supabase
+        .from("flight_prices")
+        .select("price,airline_id,departure_date")
+        .eq("route_id", bookmark.route_id);
+
+      if (secondError) throw secondError;
+
+      flightData.forEach(async (indFlight) => {
+        if (indFlight.price < bookmark.target_price) {
+          //TODO here comes email logic
+
+          const { data: email, error: thirdError } = await supabase
+            .from("auth.users")
+            .select("email")
+            .eq("id", bookmark.user_id);
+          if (thirdError) throw thirdError;
+
+          const userEmail = email?.[0]?.email;
+
+          transporter.sendMail({
+            from: "anrav277@gmail.com",
+            to: userEmail,
+            subject: `PRICE DROPPED FOR YOUR BOOKMARKED ROUTE BELOW ${indFlight.price}`,
+            text: `Hello from SKYMATE !!Your bookmarked route for the route id ${bookmark.route_id} has dropped below your target price to ${indFlight.price}.Hurry up and book your flight now!!!`,
+          });
+
+          console.log("email sent");
+        }
+      });
+    });
+  } catch (error) {
+    throw error;
   }
 };

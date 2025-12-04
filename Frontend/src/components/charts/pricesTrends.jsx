@@ -50,7 +50,7 @@ const PricesTrends = ({ labels = [], prices = [] }) => {
       },
       title: {
         display: true,
-        text: "Prices Trends over past 6 months",
+        text: "Prices Trends over past 2 months",
       },
     }, tooltip: {
       enabled: true,
