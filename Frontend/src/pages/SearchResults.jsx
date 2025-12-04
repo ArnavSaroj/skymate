@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import FlightResultsTable from "../components/search-result/SearchResultTable.jsx";
 import { SearchApi } from "../routes/searchApi.js";
-import PricesTrends from "../components/charts/PricesTrends.jsx";
+import PricesTrends from "../components/charts/pricesTrends.jsx";
 import historyPrices from "../routes/historyPrices.js";
 
 
