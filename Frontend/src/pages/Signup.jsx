@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoMdEyeOff } from "react-icons/io";
-import { IoEye, IoArrowBackCircle } from "react-icons/io5";
-import { FcGoogle } from "react-icons/fc";
+import { IoEyeOff, IoEye, IoArrowBackCircle } from "react-icons/io5"; 
 import { supabase } from "../lib/supabaseBrowser";
 
 
