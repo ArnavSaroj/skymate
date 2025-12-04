@@ -7,7 +7,7 @@ import SearchResults from "./SearchResults";
 import { AuthContext } from "../context/AuthContext";
 import Footer from "../components/ui/footer";
 import { ToastContainer } from "react-toastify";
-import SkymateWhat from "./skymateWhat";
+import SkymateWhat from "./SkymateWhat";
 
 const Layout = () => {
   const location = useLocation();
